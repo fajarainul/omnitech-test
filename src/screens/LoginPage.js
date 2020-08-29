@@ -5,10 +5,34 @@ import {
   TextInput,
   Button,
 } from 'react-native';
+import validationWrapper from '../validation/validation';
 
 
 class LoginPage extends React.Component{
 
+constructor(props) {
+    super(props)
+
+    this.state = {
+        username: '',
+        password: '',
+        usernameError : '',
+        passwordError : ''
+    }
+}
+    
+login(){
+    let usernameError = validationWrapper('username', this.state.username);
+    let passwordError = validationWrapper('username', this.state.password);
+    this.setState({
+      usernameError: usernameError,
+      passwordError: passwordError,
+    })
+
+    if(usernameError=='' && passwordError == ''){
+        alert('sukses');
+    }
+}
 
 render(){
     return (
@@ -40,7 +64,17 @@ render(){
                 }}
                 autoCompleteType ='username'
                 placeholder="Username"
+                onChangeText={
+                    text=>this.setState({
+                        username : text,
+                        usernameError : ''
+                    })
+                }
             />
+            {
+                this.state.usernameError != '' ? <View style={{marginTop:8}}><Text style={{color:'red'}}>{this.state.usernameError}</Text></View> : <View/>
+            }
+            
             <View style={{height:16}}/>
             <TextInput 
                 style={{
@@ -53,12 +87,23 @@ render(){
                 secureTextEntry={true}
                 autoCompleteType ='password'
                 placeholder="Password"
+                onChangeText={
+                    text=>this.setState({
+                        password : text,
+                        passwordError : ''
+                    })
+                }
             />
+            {
+                this.state.passwordError != '' ? <View style={{marginTop:8}}><Text style={{color:'red'}}>{this.state.passwordError}</Text></View> : <View/>
+            }
             <View style={{height:16}}/>
             
             <Button
                 onPress={
-                    ()=>{console.log('test');}
+                    ()=>{
+                        this.login();
+                    }
                 }
                 title="Login"
                 color="#841584"
