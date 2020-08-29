@@ -15,6 +15,7 @@ import {
 } from 'react-native/Libraries/NewAppScreen';
 import LoginPage from './src/screens/LoginPage';
 import MainPage from './src/screens/MainPage';
+import FormNote from './src/screens/FormNote';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -36,6 +37,13 @@ const App: () => React$Node = () => {
             options={{
               headerLeft : null,
               title : "Main Page"
+            }}
+          />
+          <Stack.Screen
+            name="Form"
+            component={FormNote}
+            options={{
+              title : "Form Note"
             }}
           />
         </Stack.Navigator>
