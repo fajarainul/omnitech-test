@@ -6,6 +6,7 @@ import {
   Button,
 } from 'react-native';
 import validationWrapper from '../validation/validation';
+import { StackActions } from '@react-navigation/native';
 
 
 class LoginPage extends React.Component{
@@ -30,7 +31,11 @@ login(){
     })
 
     if(usernameError=='' && passwordError == ''){
-        alert('sukses');
+        this.props.navigation.dispatch(
+            StackActions.replace('Main', {
+              user: 'jane',
+            })
+          );
     }
 }
 
