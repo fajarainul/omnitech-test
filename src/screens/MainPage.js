@@ -5,14 +5,26 @@ import {
   FlatList
 } from 'react-native';
 
-
-const DATA = [
-    
-  ];
-
+import NoteItem from '../components/item/note_item'
+import EmptyNote from '../components/empty/empty_note'
   
 class MainPage extends React.Component{
     
+    data= ()=>{
+        var result = [];
+        for(var i=0;i<100;i++){
+            result[i] = {
+                id : ''+i,
+                title : 'Title Note ' + i,
+                desc : 'Desc Note ' + i,
+            }
+        }
+    
+        console.log(result)
+    
+        return result;
+    }
+
     render(){
         const renderItem = ({ item }) => (
             <NoteItem title={item.title} desc={item.desc} />
@@ -21,10 +33,10 @@ class MainPage extends React.Component{
         return(
             <View>
                 <FlatList
-                    data={DATA}
+                    data={this.data()}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
-                    ListEmptyComponent={()=><EmptyList/>}
+                    ListEmptyComponent={()=><EmptyNote/>}
                 />
             </View>
         );
@@ -32,51 +44,3 @@ class MainPage extends React.Component{
 }
 
 export default MainPage;
-
-const NoteItem = (props)=>{
-    return (
-        <View
-            style={{
-                flexDirection : 'row',
-                alignItems:'center',
-                paddingLeft : 16,
-                paddingRight:16,
-                paddingTop:8,
-                paddingBottom:8
-            }}
-        >
-            <View>
-                <Text
-                    style={{
-                        fontSize:16
-                    }}
-                >
-                    {props.title}
-                </Text>
-                <Text
-                    style={{
-                        fontSize : 12
-                    }}
-                >{props.desc}
-                </Text>
-            </View>
-
-            <Text>Edit</Text>
-            <Text>Delete</Text>
-        </View>
-    )
-}
-
-const EmptyList = ()=>{
-    return (
-        <View
-            style={{
-                flex:1,
-                alignItems:"center",
-                justifyContent:"center"
-            }}
-        >
-            <Text>Empty List</Text>
-        </View>
-    );
-}
