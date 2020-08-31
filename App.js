@@ -8,14 +8,15 @@
 
 import React from 'react';
 import {
+  Button,
+  View,
+  TouchableOpacity
 } from 'react-native';
 
-import {
-  Colors, Header,
-} from 'react-native/Libraries/NewAppScreen';
 import LoginPage from './src/screens/LoginPage';
 import MainPage from './src/screens/MainPage';
 import FormNote from './src/screens/FormNote';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -36,7 +37,19 @@ const App: () => React$Node = () => {
             component={MainPage}
             options={{
               headerLeft : null,
-              title : "Main Page"
+              title : "Main Page",
+              headerRight: () => (
+                <View
+                  style={{padding : 16}}
+                >
+                  <TouchableOpacity
+                    onPress={()=>alert('click')}
+                  >
+                    <Icon name="user" size={16} color="gray" />
+                  </TouchableOpacity>
+
+                </View>
+              ),
             }}
           />
           <Stack.Screen
