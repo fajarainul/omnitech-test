@@ -24,7 +24,7 @@ constructor(props) {
     
 login(){
     let usernameError = validationWrapper('username', this.state.username);
-    let passwordError = validationWrapper('username', this.state.password);
+    let passwordError = validationWrapper('password', this.state.password);
     this.setState({
       usernameError: usernameError,
       passwordError: passwordError,

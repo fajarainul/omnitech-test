@@ -21,6 +21,21 @@ const constraints = {
         minimum: 8,
         message: "must be at least 8 characters."
       }
+    },
+
+
+    title: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      }
+    },
+
+    description: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      }
     }
   }
 
