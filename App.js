@@ -17,6 +17,8 @@ import LoginPage from './src/screens/LoginPage';
 import MainPage from './src/screens/MainPage';
 import FormNote from './src/screens/FormNote';
 import FormProfile from './src/screens/FormProfile';
+import Profile from './src/screens/Profile';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { NavigationContainer } from '@react-navigation/native';
@@ -45,7 +47,7 @@ const App: () => React$Node = () => {
                     style={{padding : 16}}
                   >
                     <TouchableOpacity
-                      onPress={()=> navigation.navigate('FormProfile')}
+                      onPress={()=> navigation.navigate('Profile')}
                     >
                       <Icon name="user" size={16} color="gray" />
                     </TouchableOpacity>
@@ -63,10 +65,17 @@ const App: () => React$Node = () => {
             }}
           />
           <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title : "Profile"
+            }}
+          />
+          <Stack.Screen
             name="FormProfile"
             component={FormProfile}
             options={{
-              title : "Form Profile"
+              title : "Edit Profile"
             }}
           />
         </Stack.Navigator>
