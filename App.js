@@ -8,14 +8,18 @@
 
 import React from 'react';
 import {
+  Button,
+  View,
+  TouchableOpacity
 } from 'react-native';
 
-import {
-  Colors, Header,
-} from 'react-native/Libraries/NewAppScreen';
 import LoginPage from './src/screens/LoginPage';
 import MainPage from './src/screens/MainPage';
 import FormNote from './src/screens/FormNote';
+import FormProfile from './src/screens/FormProfile';
+import Profile from './src/screens/Profile';
+
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -34,16 +38,44 @@ const App: () => React$Node = () => {
           <Stack.Screen
             name="Main"
             component={MainPage}
-            options={{
-              headerLeft : null,
-              title : "Main Page"
-            }}
+            options={({ navigation, route }) => (
+              {
+                headerLeft : null,
+                title : "Main Page",
+                headerRight: () => (
+                  <View
+                    style={{padding : 16}}
+                  >
+                    <TouchableOpacity
+                      onPress={()=> navigation.navigate('Profile')}
+                    >
+                      <Icon name="user" size={16} color="gray" />
+                    </TouchableOpacity>
+  
+                  </View>
+                ),
+              }
+            )}
           />
           <Stack.Screen
             name="Form"
             component={FormNote}
             options={{
               title : "Form Note"
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title : "Profile"
+            }}
+          />
+          <Stack.Screen
+            name="FormProfile"
+            component={FormProfile}
+            options={{
+              title : "Edit Profile"
             }}
           />
         </Stack.Navigator>
