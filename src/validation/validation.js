@@ -36,6 +36,12 @@ const constraints = {
         allowEmpty : false,
         message: "is required."
       }
+    },
+    imagenote : {
+      presence : {
+        allowEmpty : false,
+        message : 'is required'
+      }
     }
   }
 

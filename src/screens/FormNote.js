@@ -14,6 +14,8 @@ import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment'
 import ImagePicker from 'react-native-image-picker';
 import validationWrapper from '../validation/validation';
+import App from '../../App';
+import { getIntervals, addNote } from '../database/NoteDB';
 
 class FormNote extends React.Component{
 
@@ -27,21 +29,39 @@ class FormNote extends React.Component{
             descriptionError : '',
             isUsingReminder: true,
             showDate : false,
-            selectedDate : new Date(),
+            selectedDate : Moment(new Date()).add(1, 'days').toDate(),
             mode : 'date',
             minDate : Moment(new Date()).add(1, 'days').toDate(),
 
-            intervals : {
-                '1hour' : false,
-                '3hours' : false,
-                '1day' : false,
-            },
-            image : ''
+            intervals : [
+                {
+                    label : '1 Hour',
+                    value : 1,
+                    selected : false
+                },
+                {
+                    label : '3 Hours',
+                    value : 2,
+                    selected : false
+                },
+                {
+                    label : '1 Day',
+                    value : 3,
+                    selected : false
+                }
+            ],
+            image : '',
+            imageError : ''
         }
     }
 
-    onChangeDate = (event, date) =>{
+    async componentDidMount(){
+        let intervals = await getIntervals();
 
+    }
+
+    onChangeDate = (event, date) =>{
+        console.log(Moment(date).format('YYYY-MM-DD HH:mm:ss'))
         this.setState({
             selectedDate : date,
             showDate : false
@@ -62,7 +82,7 @@ class FormNote extends React.Component{
             } else if (response.customButton) {
               console.log('User tapped custom button: ', response.customButton);
             } else {
-              const source = { uri: response.uri };
+              const source = response.uri;
           
               // You can also display the image using data:
               // const source = { uri: 'data:image/jpeg;base64,' + response.data };
@@ -74,16 +94,24 @@ class FormNote extends React.Component{
           });
     }
 
-    saveNote(){
+    async saveNote(){
         let titleError = validationWrapper('title', this.state.title);
         let descriptionError = validationWrapper('description', this.state.description);
+        let imageError = validationWrapper('imagenote', this.state.image);
         this.setState({
           titleError: titleError,
           descriptionError: descriptionError,
+          imageError: imageError,
         })
     
-        if(titleError=='' && descriptionError == ''){
-            alert('sukses')
+        if(titleError=='' && descriptionError == '' && imageError == ''){
+            await addNote({
+                title : this.state.title,
+                desc : this.state.description,
+                time : Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss'),
+                attachment : this.state.image,
+                intervals : this.state.intervals
+            })
         }
     }
 
@@ -110,7 +138,7 @@ class FormNote extends React.Component{
                         }
                     />
 
-                     {
+                    {
                         this.state.titleError != '' ? <View><Text style={{color:'red'}}>{this.state.titleError}</Text></View> : <View/>
                     }
 
@@ -188,62 +216,39 @@ class FormNote extends React.Component{
                             <View
                                 style={{marginLeft:8, marginRight:8}}
                             >
-                                <View
-                                    style={{flexDirection:'row', alignItems : 'center', justifyContent:'space-between'}}
-                                >
-                                    <Text style={{color:'#565656'}}>1 Hour Before</Text>
-                                    <CheckBox
-                                        tintColors={{ false: "#767577", true: "#81b0ff" }}
-                                        disabled={false}
-                                        value={this.state.intervals['1hour']}
-                                        onValueChange={(newValue) => this.setState((prevState)=>(
-                                            {
-                                                intervals : {
-                                                    ...prevState.intervals,
-                                                    '1hour' : newValue
-                                                }
-                                            }
-                                        ))}
-                                    />    
-                                </View>
+                                {
+                                    this.state.intervals.map((prop, key)=>{
+                                        
+                                        return <View
+                                                    key={prop.value}
+                                                    style={{flexDirection:'row', alignItems : 'center', justifyContent:'space-between'}}
+                                                >
+                                                    <Text style={{color:'#565656'}}>{ prop.label }</Text>
+                                                    <CheckBox
+                                                        tintColors={{ false: "#767577", true: "#81b0ff" }}
+                                                        disabled={false}
+                                                        value={prop.selected}
+                                                        onValueChange={(newValue) => 
+                                                            {
+                                                                let newIntervals = [...this.state.intervals];
+                                                                newIntervals[key] = {
+                                                                    ...prop,
+                                                                    selected : newValue
+                                                                }
+                                                                this.setState((prevState)=>(
+                                                                    {
+                                                                        intervals : newIntervals                                                          }
+                                                                ), ()=>{
+                                                                    console.log(this.state.intervals)
+                                                                })
+                                                            }
+                                                        }
+                                                    />    
+                                                </View>
+                                    })
+                                }
+                            
 
-                                <View
-                                    style={{flexDirection:'row', alignItems : 'center', justifyContent:'space-between'}}
-                                >
-                                    <Text style={{color:'#565656'}}>3 Hours Before</Text>
-                                    <CheckBox
-                                        tintColors={{ false: "#767577", true: "#81b0ff" }}
-                                        disabled={false}
-                                        value={this.state.intervals['3hours']}
-                                        onValueChange={(newValue) => this.setState((prevState)=>(
-                                            {
-                                                intervals : {
-                                                    ...prevState.intervals,
-                                                    '3hours' : newValue
-                                                }
-                                            }
-                                        ))}
-                                    />    
-                                </View>
-
-                                <View
-                                    style={{flexDirection:'row', alignItems : 'center', justifyContent:'space-between'}}
-                                >
-                                    <Text style={{color:'#565656'}}>1 Day Before</Text>
-                                    <CheckBox
-                                        tintColors={{ false: "#767577", true: "#81b0ff" }}
-                                        disabled={false}
-                                        value={this.state.intervals['1day']}
-                                        onValueChange={(newValue) => this.setState((prevState)=>(
-                                            {
-                                                intervals : {
-                                                    ...prevState.intervals,
-                                                    '1day' : newValue
-                                                }
-                                            }
-                                        ))}
-                                    />    
-                                </View>
                             </View>
 
                         </View> : null
@@ -265,8 +270,12 @@ class FormNote extends React.Component{
 
                     {
                         this.state.image !== '' ?
-                        <Image source={this.state.image} style={{width:100, height:100}} /> :
+                        <Image source={{uri : this.state.image}} style={{width:100, height:100}} /> :
                         null
+                    }
+
+                    {
+                        this.state.imageError != '' ? <View><Text style={{color:'red'}}>{this.state.imageError}</Text></View> : <View/>
                     }
 
 
