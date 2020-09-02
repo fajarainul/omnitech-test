@@ -2,21 +2,12 @@ import React from 'react';
 import {
   View,
   Text,
-  TextInput,
   ScrollView,
   StyleSheet,
-  Switch,
   Button,
   Image
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import CheckBox from '@react-native-community/checkbox';
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import Moment from 'moment'
-import ImagePicker from 'react-native-image-picker';
-import validationWrapper from '../validation/validation';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import RadioGroup from 'react-native-radio-buttons-group';
 import { getUserData } from '../session/LoginSession';
 
 class Profile extends React.Component{
@@ -31,6 +22,11 @@ class Profile extends React.Component{
     } 
 
     async componentDidMount(){
+        await this.getProfile()
+    }
+
+    async getProfile(){
+        console.log('getProfile')
         let userData = await getUserData()
         this.setState({
             userData : {...userData}
@@ -120,7 +116,9 @@ class Profile extends React.Component{
                         <Button
                             onPress={
                                 ()=>{
-                                    this.props.navigation.navigate('FormProfile')
+                                    this.props.navigation.navigate('FormProfile',
+                                        {onNavigateBack: async () => this.getProfile()}
+                                    )
                                 }
                             }
                             title="Edit"

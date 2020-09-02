@@ -312,10 +312,9 @@ class FormNote extends React.Component{
                                                                 }
                                                                 this.setState((prevState)=>(
                                                                     {
-                                                                        intervals : newIntervals                                                          }
-                                                                ), ()=>{
-                                                                    console.log(this.state.intervals)
-                                                                })
+                                                                        intervals : newIntervals                                                          
+                                                                    }
+                                                                ))
                                                             }
                                                         }
                                                     />    
