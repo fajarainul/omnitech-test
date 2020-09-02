@@ -101,10 +101,12 @@ class FormNote extends React.Component{
 
     onChangeDate = (event, date) =>{
         console.log(Moment(date).format('YYYY-MM-DD HH:mm:ss'))
-        this.setState({
-            selectedDate : date,
-            showDate : false
-        })
+        if(date!==undefined){
+            this.setState({
+                selectedDate : date,
+                showDate : false
+            })
+        }
     }    
 
     selectImage = () =>{
