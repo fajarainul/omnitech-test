@@ -77,14 +77,37 @@ export async function addNote(note){
 
         console.log(values);
 
-        //insert into table note_interval
-        let insert_note_interval = await ExecuteQuery("INSERT INTO tb_note_interval (id_note, id_interval) VALUES "+ values +";",[])
+        if(values!==""){
+             //insert into table note_interval
+            let insert_note_interval = await ExecuteQuery("INSERT INTO tb_note_interval (id_note, id_interval) VALUES "+ values +";",[])
 
-        console.log(insert_note_interval);
+            console.log(insert_note_interval);
+        }
 
     }catch(er){
         console.log(er);
     }
 
     return result;
+}
+
+
+export async function getNotes(){
+    var result = [];
+
+    try{
+        let notes_query = await ExecuteQuery("SELECT * FROM tb_note;",[]);
+        console.log(notes_query)
+        
+        var rows = notes_query.rows;
+        for (let i = 0; i < rows.length; i++) {
+            result[i] = rows.item(i);
+        }
+
+    }catch(er){
+        console.log(er);
+    }
+
+    return result;
+
 }

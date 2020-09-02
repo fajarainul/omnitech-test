@@ -8,35 +8,41 @@ import {
 import NoteItem from '../components/item/note_item'
 import EmptyNote from '../components/empty/empty_note'
 import FloatingActionButton from '../components/button/floating_action_button'
+import {getNote, getNotes} from '../database/NoteDB'
   
 class MainPage extends React.Component{
     
-    data= ()=>{
-        var result = [];
-        for(var i=0;i<100;i++){
-            result[i] = {
-                id : ''+i,
-                title : 'Title Note ' + i,
-                desc : 'Desc Note ' + i,
-            }
+    constructor(props) {
+        super(props)
+    
+        this.state = {
+            notes : [],
         }
-    
-        console.log(result)
-    
-        return result;
+
+    }
+
+    async componentDidMount(){
+        let result = await getNotes();
+        this.setState({
+            notes : [...result]
+        })
     }
 
     render(){
         const renderItem = ({ item }) => (
-            <NoteItem title={item.title} desc={item.desc} />
+            <NoteItem title={item.title} desc={item.desc}/>
           );
 
         return(
-            <View>
+            <View
+                style={{
+                    flex : 1
+                }}
+            >
                 <FlatList
-                    data={this.data()}
+                    data={this.state.notes}
                     renderItem={renderItem}
-                    keyExtractor={item => item.id}
+                    keyExtractor={item => ""+item.id}
                     ListEmptyComponent={()=><EmptyNote/>}
                 />
                 <FloatingActionButton 
