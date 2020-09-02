@@ -1,7 +1,7 @@
 import validate from "validate.js"
 
 
-const constraints = {
+export const constraints = {
     username: {
       presence: {
         allowEmpty :false,
@@ -23,6 +23,14 @@ const constraints = {
       }
     },
 
+    confirmPassword :{
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      },
+      equality: "password"
+    },
+
 
     title: {
       presence: {
@@ -42,7 +50,44 @@ const constraints = {
         allowEmpty : false,
         message : 'is required'
       }
-    }
+    },
+
+
+    firstname: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      }
+    },
+
+    lastname: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      }
+    },
+
+    email: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      },
+      email : true
+    },
+
+    birthdate: {
+      presence: {
+        allowEmpty : false,
+        message: "is required."
+      }
+    },
+
+    imageprofile : {
+      presence : {
+        allowEmpty : false,
+        message : 'is required'
+      }
+    },
   }
 
 export default function validationWrapper(fieldName, value) {
