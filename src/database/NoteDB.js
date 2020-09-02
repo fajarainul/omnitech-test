@@ -29,6 +29,13 @@ export async function createTable() {
       let init_tb_interval = await ExecuteQuery("INSERT INTO tb_interval (id, interval) VALUES (1, \"1 Hour\"), (2, \"3 Hours\"), (3, \"1 Day\");", []);
     }
 
+    //initiate tb user
+    //check tb user
+    let check_tb_user = await ExecuteQuery("SELECT * FROM tb_user;", []);
+    if(check_tb_user.rows.length == 0 ){
+        let insert_user = await ExecuteQuery("INSERT INTO tb_user (firstname, lastname, email, imageprofile, password, sex, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?)", ['fajar', 'ainul', 'fajar@email.com', null, 'password', 1, '1998-08-08'])
+    }
+
 }
 
 export async function getIntervals(){
@@ -201,4 +208,36 @@ export async function deleteNote(id){
 
     return result;
 
+}
+
+
+export async function loginUser(email, password){
+    var result = null;
+
+    var is_success = false;
+    var message = 'User not found';
+    var user_data = null;
+
+    try{
+        let login_query = await ExecuteQuery("SELECT * FROM tb_user WHERE email = ? AND password = ?;",[email, password]);
+        
+        var rows = login_query.rows;
+
+        if(rows.length > 0){
+            is_success = true;
+            user_data = rows.item(0);
+            message = '';
+        }
+    
+    }catch(er){
+        console.log(er);
+    }
+
+    result = {
+        is_success,
+        message,
+        user_data
+    }
+
+    return result;
 }
