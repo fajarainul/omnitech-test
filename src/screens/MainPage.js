@@ -2,13 +2,14 @@ import React from 'react';
 import {
   View,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Alert
 } from 'react-native';
 
 import NoteItem from '../components/item/note_item'
 import EmptyNote from '../components/empty/empty_note'
 import FloatingActionButton from '../components/button/floating_action_button'
-import {getNote, getNotes} from '../database/NoteDB'
+import {getNotes, deleteNote} from '../database/NoteDB'
   
 class MainPage extends React.Component{
     
@@ -22,15 +23,40 @@ class MainPage extends React.Component{
     }
 
     async componentDidMount(){
+        this.getNotes();
+    }
+
+    async getNotes(){
         let result = await getNotes();
         this.setState({
             notes : [...result]
         })
     }
 
+    confirmDelete = (id) =>
+        Alert.alert(
+        "Delete Note",
+        "Are you sure you want to delete?",
+        [
+            { text: "Yes", onPress: () => {
+                    let result = deleteNote(id)
+                    if(result){
+                        this.getNotes()
+                    }
+                } 
+            },
+            {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+            },
+            
+        ],
+        { cancelable: true }
+        );
+
     render(){
         const renderItem = ({ item }) => (
-            <NoteItem title={item.title} desc={item.desc}/>
+            <NoteItem title={item.title} desc={item.desc} onPressDelete={()=>this.confirmDelete(item.id)}/>
           );
 
         return(

@@ -37,7 +37,7 @@ const NoteItem = (props)=>{
             >
                 <Text onPress={()=>{console.log('edit')}} style={styles.editButton}>Edit</Text>
                 <View style={{width:8}}></View>
-                <Text onPress={()=>{console.log('delete')}} style={styles.deleteButton}>Delete</Text>
+                <Text onPress={props.onPressDelete} style={styles.deleteButton}>Delete</Text>
             </View>
         </View>
     )

@@ -111,3 +111,26 @@ export async function getNotes(){
     return result;
 
 }
+
+export async function deleteNote(id){
+    var result = false;
+    try{
+        let delete_query = await ExecuteQuery("DELETE FROM tb_note WHERE id=?;",[id]);
+        console.log(delete_query)
+        
+        if(delete_query){
+            let delete_note_interval = await ExecuteQuery("DELETE FROM tb_note_interval WHERE id_note=?;",[id]);
+            console.log(delete_note_interval)
+
+            if(delete_query && delete_note_interval){
+                result = true;
+            }
+        }
+
+    }catch(er){
+        console.log(er);
+    }
+
+    return result;
+
+}
