@@ -241,3 +241,20 @@ export async function loginUser(email, password){
 
     return result;
 }
+
+export async function updateUser(user){
+    var result = false;
+    try{
+        let update_tb_user = await ExecuteQuery("UPDATE tb_user SET firstname = ?, lastname = ?, email = ?, birthdate = ?, imageprofile = ?, sex = ?, password = ? WHERE id = ?;",[user.firstname, user.lastname, user.email, user.birthdate, user.imageprofile, user.sex, user.password, user.id ]);
+        console.log('try2')
+        console.log(update_tb_user)
+        if(update_tb_user){
+            result = true;
+        } 
+
+    }catch(er){
+        console.log(er);
+    }
+
+    return result;
+}
