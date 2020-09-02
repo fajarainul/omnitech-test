@@ -13,7 +13,7 @@ const EmptyNote = ()=>{
                 justifyContent:"center"
             }}
         >
-            <Text>Empty List</Text>
+            <Text>Click button + for add a new Note</Text>
         </View>
     );
 }
