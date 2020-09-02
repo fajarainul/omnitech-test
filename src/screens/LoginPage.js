@@ -7,6 +7,8 @@ import {
 } from 'react-native';
 import validationWrapper from '../validation/validation';
 import { StackActions } from '@react-navigation/native';
+import { loginUser } from '../database/NoteDB';
+import { saveUserSession } from '../session/LoginSession';
 
 
 class LoginPage extends React.Component{
@@ -22,7 +24,7 @@ constructor(props) {
     }
 }
     
-login(){
+async login(){
     let usernameError = validationWrapper('username', this.state.username);
     let passwordError = validationWrapper('password', this.state.password);
     this.setState({
@@ -31,11 +33,23 @@ login(){
     })
 
     if(usernameError=='' && passwordError == ''){
-        this.props.navigation.dispatch(
-            StackActions.replace('Main', {
-              user: 'jane',
+        let result = await loginUser(this.state.username, this.state.password);
+        console.log(result)
+        if(result.is_success){
+            console.log('here')
+            let userData = result.user_data;
+            saveUserSession(userData).then(()=>{
+                this.props.navigation.dispatch(
+                    StackActions.replace('Main', {
+                      user: 'jane',
+                    })
+                  );
             })
-          );
+            
+        }else{
+            let message = result.message;
+            alert(message)
+        }
     }
 }
 
