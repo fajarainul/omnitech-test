@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-picker';
 import validationWrapper from '../validation/validation';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import RadioGroup from 'react-native-radio-buttons-group';
+import { getUserData } from '../session/LoginSession';
 
 class Profile extends React.Component{
 
@@ -24,10 +25,17 @@ class Profile extends React.Component{
         super(props)
     
         this.state = {
-        
+            userData : {}
         }
 
     } 
+
+    async componentDidMount(){
+        let userData = await getUserData()
+        this.setState({
+            userData : {...userData}
+        })
+    }
 
     render(){
         return(
@@ -51,7 +59,8 @@ class Profile extends React.Component{
 
                         <Image  
                             source={{
-                                uri: 'https://reactnative.dev/img/tiny_logo.png',
+                                uri: this.state.userData.imageprofile == null || this.state.userData.imageprofile == '' ?
+                                'https://i.pinimg.com/originals/0c/3b/3a/0c3b3adb1a7530892e55ef36d3be6cb8.png' : this.state.userData.imageprofile,
                             }}
                             style={
                                 {
@@ -70,7 +79,7 @@ class Profile extends React.Component{
                             Name
                         </Text>
                         <Text>
-                            Mohammad Fajar Ainul
+                            {this.state.userData.firstname} {this.state.userData.lastname}
                         </Text>
                     </View>
 
@@ -81,7 +90,7 @@ class Profile extends React.Component{
                             Email
                         </Text>
                         <Text>
-                            fajarainul14@gmail.com
+                            {this.state.userData.email}
                         </Text>
                     </View>
 
@@ -92,7 +101,7 @@ class Profile extends React.Component{
                             Tanggal Lahir
                         </Text>
                         <Text>
-                            14 Juli 2994
+                            {Moment(this.state.userData.birthdate).format("DD MMMM YYYY")}
                         </Text>
                     </View>
 
@@ -103,7 +112,7 @@ class Profile extends React.Component{
                             Jenis Kelamin
                         </Text>
                         <Text>
-                            Laki - Laki
+                            {this.state.userData.sex == 1 ? 'Male' : 'Female'}
                         </Text>
                     </View>
 
