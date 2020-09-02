@@ -10,7 +10,8 @@ import React, { useEffect } from 'react';
 import {
   Button,
   View,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from 'react-native';
 
 import LoginPage from './src/screens/LoginPage';
@@ -27,6 +28,7 @@ import SQLite from 'react-native-sqlite-storage';
 import NodeDB from './src/database/NoteDB'
 import NoteItem from './src/components/item/note_item';
 import {createTable} from './src/database/NoteDB';
+import { clearUserSession } from './src/session/LoginSession';
 
 global.db = SQLite.openDatabase(
   {
@@ -89,9 +91,41 @@ class App extends React.Component {
             <Stack.Screen
               name="Profile"
               component={Profile}
-              options={{
-                title : "Profile"
-              }}
+              options={({ navigation, route }) => (
+                {
+                  title : "Profile",
+                  headerRight: () => (
+                    <View
+                      style={{padding : 16}}
+                    >
+                      <TouchableOpacity
+                        onPress={
+                          () => Alert.alert(
+                            "Logout",
+                            "Are you sure you want to logout?",
+                            [
+                                { text: "Yes", onPress: async () => {
+                                        await clearUserSession()
+                                        navigation.navigate('Login')
+                                    } 
+                                },
+                                {
+                                    text: "Cancel",
+                                    onPress: () => console.log("Cancel Pressed"),
+                                },
+                                
+                            ],
+                            { cancelable: true }
+                          )
+                        }
+                      >
+                        <Icon name="sign-out" size={16} color="gray" />
+                      </TouchableOpacity>
+    
+                    </View>
+                  ),
+                }
+              )}
             />
             <Stack.Screen
               name="FormProfile"
