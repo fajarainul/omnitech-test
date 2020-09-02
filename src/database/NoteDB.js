@@ -98,6 +98,9 @@ export async function updateNote(note){
     try{
         let update_tb_note = await ExecuteQuery("UPDATE tb_note SET title = ?, desc = ?, time = ?, attachment = ? WHERE id = ?;",[note.title, note.desc, note.time, note.attachment, note.id]);
 
+        //delete data
+        let delete_note_interval =  await ExecuteQuery("DELETE FROM tb_note_interval WHERE id_note=?;", [note.id]);
+        
         var values = "";
         for(var i= 0; i<note.intervals.length;i++){
             var interval = note.intervals[i];
@@ -109,9 +112,6 @@ export async function updateNote(note){
         values = values.slice(0, -1);
 
         if(values!==""){
-            //delete data
-            let delete_note_interval =  await ExecuteQuery("DELETE FROM tb_note_interval WHERE id_note=?;", [note.id]);
-
              //insert into table note_interval
             let update_note_interval = await ExecuteQuery("INSERT INTO tb_note_interval (id_note, id_interval) VALUES "+ values +";",[])
 

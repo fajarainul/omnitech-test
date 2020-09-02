@@ -86,14 +86,15 @@ class FormNote extends React.Component{
                     image : note.attachment,
                     title : note.title,
                     description : note.desc,
-                    selectedDate : Moment(note.time).toDate(),
+                    isUsingReminder : note.time !== null,
+                    selectedDate : note.time === null ? Moment(new Date()).add(1, 'days').toDate() : Moment(note.time).toDate(),
                     intervals : [...intervals],
                     isUpdate : true,
                     idNote : id
                 })
             }
         }else{
-            alert('null')
+            //id not set
         }
         
         
@@ -149,9 +150,9 @@ class FormNote extends React.Component{
             var note = {
                 title : this.state.title,
                 desc : this.state.description,
-                time : Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss'),
+                time : this.state.isUsingReminder ? Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss') : null,
                 attachment : this.state.image,
-                intervals : this.state.intervals,
+                intervals : this.state.isUsingReminder ? this.state.intervals : [],
                 id : this.state.idNote
             }
 
