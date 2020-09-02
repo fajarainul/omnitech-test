@@ -105,13 +105,18 @@ class FormNote extends React.Component{
         })
     
         if(titleError=='' && descriptionError == '' && imageError == ''){
-            await addNote({
+            let result = await addNote({
                 title : this.state.title,
                 desc : this.state.description,
                 time : Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss'),
                 attachment : this.state.image,
                 intervals : this.state.intervals
             })
+
+            if(result){
+                this.props.route.params.onNavigateBack(); 
+                this.props.navigation.pop();
+            }
         }
     }
 
