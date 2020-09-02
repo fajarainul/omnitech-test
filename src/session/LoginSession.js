@@ -11,3 +11,17 @@ export async function saveUserSession(user){
     }
 
 }
+
+export async function getUserData(user){
+    var result = {};
+
+    try {
+        const jsonValue = await AsyncStorage.getItem('@user_data')
+        result = jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+        console.log(e)
+    }
+
+    return result;
+
+}

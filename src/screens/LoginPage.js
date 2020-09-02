@@ -34,9 +34,8 @@ async login(){
 
     if(usernameError=='' && passwordError == ''){
         let result = await loginUser(this.state.username, this.state.password);
-        console.log(result)
+        
         if(result.is_success){
-            console.log('here')
             let userData = result.user_data;
             saveUserSession(userData).then(()=>{
                 this.props.navigation.dispatch(
