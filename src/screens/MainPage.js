@@ -23,6 +23,10 @@ class MainPage extends React.Component{
     }
 
     async componentDidMount(){
+        this.getNotes();
+    }
+
+    async getNotes(){
         let result = await getNotes();
         this.setState({
             notes : [...result]
@@ -34,11 +38,16 @@ class MainPage extends React.Component{
         "Delete Note",
         "Are you sure you want to delete?",
         [
-            { text: "Yes", onPress: () => deleteNote(id) },
+            { text: "Yes", onPress: () => {
+                    let result = deleteNote(id)
+                    if(result){
+                        this.getNotes()
+                    }
+                } 
+            },
             {
-            text: "Cancel",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel"
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
             },
             
         ],
