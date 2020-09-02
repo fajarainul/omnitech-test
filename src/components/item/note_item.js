@@ -35,7 +35,7 @@ const NoteItem = (props)=>{
                     flexDirection : 'row',
                 }}
             >
-                <Text onPress={()=>{console.log('edit')}} style={styles.editButton}>Edit</Text>
+                <Text onPress={props.onPressEdit} style={styles.editButton}>Edit</Text>
                 <View style={{width:8}}></View>
                 <Text onPress={props.onPressDelete} style={styles.deleteButton}>Delete</Text>
             </View>

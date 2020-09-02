@@ -58,7 +58,17 @@ class MainPage extends React.Component{
 
     render(){
         const renderItem = ({ item }) => (
-            <NoteItem title={item.title} desc={item.desc} onPressDelete={()=>this.confirmDelete(item.id)}/>
+            <NoteItem 
+                title={item.title} 
+                desc={item.desc} 
+                onPressDelete={()=>this.confirmDelete(item.id)} 
+                onPressEdit={()=>this.props.navigation.navigate('Form', 
+                    {
+                        id : item.id,
+                        onNavigateBack: async () => this.getNotes()
+                    }
+                )}
+                />
           );
 
         return(

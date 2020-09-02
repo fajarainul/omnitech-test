@@ -7,7 +7,8 @@ import {
   StyleSheet,
   Switch,
   Button,
-  Image
+  Image,
+  Alert
 } from 'react-native';
 import CheckBox from '@react-native-community/checkbox';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
@@ -15,7 +16,7 @@ import Moment from 'moment'
 import ImagePicker from 'react-native-image-picker';
 import validationWrapper from '../validation/validation';
 import App from '../../App';
-import { getIntervals, addNote } from '../database/NoteDB';
+import { getIntervals, addNote, getNote, updateNote } from '../database/NoteDB';
 
 class FormNote extends React.Component{
 
@@ -51,13 +52,51 @@ class FormNote extends React.Component{
                 }
             ],
             image : '',
-            imageError : ''
+            imageError : '',
+            isUpdate : false,
+            idNote : null
         }
     }
 
     async componentDidMount(){
         let intervals = await getIntervals();
+        
+        //get id
+        const {id} = this.props.route.params;
+        if(id!=null){
+            //get note
+            let note = await getNote(id);
+        
+            if(note!=null){
+                var tempIntervals = []
+                var length = intervals.length;
+                var length2 = note.intervals.length;
+                for(var i = 0; i < length ; i++){
+                    for(var j=0;j<length2;j++){
+                        if(intervals[i].value == note.intervals[j].id){
+                            intervals[i] = {
+                                ...intervals[i],
+                                selected : true
+                            }
+                        }
+                    }
+                }
 
+                this.setState({
+                    image : note.attachment,
+                    title : note.title,
+                    description : note.desc,
+                    selectedDate : Moment(note.time).toDate(),
+                    intervals : [...intervals],
+                    isUpdate : true,
+                    idNote : id
+                })
+            }
+        }else{
+            alert('null')
+        }
+        
+        
     }
 
     onChangeDate = (event, date) =>{
@@ -105,19 +144,45 @@ class FormNote extends React.Component{
         })
     
         if(titleError=='' && descriptionError == '' && imageError == ''){
-            let result = await addNote({
+            var note = {
                 title : this.state.title,
                 desc : this.state.description,
                 time : Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss'),
                 attachment : this.state.image,
-                intervals : this.state.intervals
-            })
+                intervals : this.state.intervals,
+                id : this.state.idNote
+            }
+
+            var result = false
+
+            if(this.state.isUpdate){
+                result = await updateNote(note)
+            }else{
+                result = await addNote(note)
+            }
 
             if(result){
-                this.props.route.params.onNavigateBack(); 
-                this.props.navigation.pop();
+                Alert.alert(
+                    "Success",
+                    "Note saved!",
+                    [
+                        { text: "OK", onPress: () => {
+                                this.goback();
+                            } 
+                        },
+                        
+                    ],
+                    { cancelable: false }
+                );
+            }else{
+                alert('Save note failed')
             }
         }
+    }
+
+    goback(){
+        this.props.route.params.onNavigateBack(); 
+        this.props.navigation.pop();
     }
 
     render(){
@@ -141,6 +206,7 @@ class FormNote extends React.Component{
                                 titleError : ''
                             })
                         }
+                        defaultValue={this.state.title}
                     />
 
                     {
@@ -157,6 +223,7 @@ class FormNote extends React.Component{
                                 descriptionError : ''
                             })
                         }
+                        defaultValue={this.state.description}
                     />
 
                     {
