@@ -37,6 +37,7 @@ async login(){
         
         if(result.is_success){
             let userData = result.user_data;
+            console.log(userData)
             saveUserSession(userData).then(()=>{
                 this.props.navigation.dispatch(
                     StackActions.replace('Main', {
