@@ -3,7 +3,8 @@ import {
   View,
   TouchableOpacity,
   FlatList,
-  Alert
+  Alert,
+  AppState
 } from 'react-native';
 
 import NoteItem from '../components/item/note_item'
@@ -25,6 +26,7 @@ class MainPage extends React.Component{
     async componentDidMount(){
         this.getNotes();
     }
+
 
     async getNotes(){
         let result = await getNotes();
@@ -77,7 +79,10 @@ class MainPage extends React.Component{
                         bottom: 10,
                         right: 10,
                     }}
-                    onPress={() => this.props.navigation.navigate('Form')}
+                    onPress={() => this.props.navigation.navigate('Form', 
+                            {onNavigateBack: async () => this.getNotes()}
+                        )
+                    }
                 />
             </View>
         );

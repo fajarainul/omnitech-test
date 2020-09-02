@@ -82,6 +82,15 @@ export async function addNote(note){
             let insert_note_interval = await ExecuteQuery("INSERT INTO tb_note_interval (id_note, id_interval) VALUES "+ values +";",[])
 
             console.log(insert_note_interval);
+
+            if(insert_tb_note && insert_note_interval){
+                console.log('sukses')
+                result = true;
+            }
+        }else{
+            if(insert_tb_note){
+                result = true;
+            } 
         }
 
     }catch(er){
