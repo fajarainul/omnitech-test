@@ -1,5 +1,6 @@
 import ReactNativeAN from 'react-native-alarm-notification';
 import Moment from 'moment'
+import { getNote } from '../database/NoteDB';
 
 export async function setAlarm(note){
     console.log(note)
@@ -23,11 +24,8 @@ export async function setAlarm(note){
     
         }
 
-        console.log('hour '+hour)
-
         if(hour != 0){
             var date = Moment(note.time).subtract(hour, 'hours').format("DD-MM-YYYY HH:mm:ss");
-            console.log(date)
             const alarmNotifData = {
                 title: note.title,
                 message: note.desc,
@@ -42,25 +40,42 @@ export async function setAlarm(note){
         
             //Schedule Future Alarm
             const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData });
-            result.push(alarm.id)
-            console.log(alarm); // { id: 1 }
         
             //Send Local Notification Now
             ReactNativeAN.sendNotification(alarmNotifData);
         }
 
     }
-    
-    console.log('huwala '+result)
 
     return result;
 }
 
 async function removeAlarm(ids){
-    console.log('ids')
-    console.log(ids)
     for(var i=0;i<ids.length;i++){
         console.log(ids[i])
         ReactNativeAN.deleteAlarm(ids[i]);
     }
+}
+
+
+export async function removeAlarmByNoteId(id){
+    let note = await getNote(id);
+    var alarms = [];
+    var alarm_id = ''
+    if(note.alarm_id){
+        if(note.alarm_id.charAt(note.alarm_id.length-1)== ','){
+            alarm_id = note.alarm_id.slice(0, -1);
+        }else{
+            alarm_id = note.alarm_id;
+        }
+
+        if(alarm_id!=''){
+            alarms = alarm_id.split(',').map(function(item) {
+                return parseInt(item, 10);
+            });
+        }
+    }
+
+    await removeAlarm(alarms)
+
 }

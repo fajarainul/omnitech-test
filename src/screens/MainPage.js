@@ -11,6 +11,7 @@ import NoteItem from '../components/item/note_item'
 import EmptyNote from '../components/empty/empty_note'
 import FloatingActionButton from '../components/button/floating_action_button'
 import {getNotes, deleteNote} from '../database/NoteDB'
+import { removeAlarmByNoteId } from '../alarm/alarm';
   
 
 class MainPage extends React.Component{
@@ -40,8 +41,9 @@ class MainPage extends React.Component{
         "Delete Note",
         "Are you sure you want to delete?",
         [
-            { text: "Yes", onPress: () => {
-                    let result = deleteNote(id)
+            { text: "Yes", onPress: async () => {
+                    await removeAlarmByNoteId(id)
+                    let result = await deleteNote(id)
                     if(result){
                         this.getNotes()
                     }
