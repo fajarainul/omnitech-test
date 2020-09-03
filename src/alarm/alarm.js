@@ -15,11 +15,11 @@ export async function setAlarm(note){
 
         if(note.intervals[i].selected){
             if(note.intervals[i].value == 1){
-                hour = 1
-            }else if(note.intervals[i].value == 2){
-                hour = 3
-            }else if(note.intervals[i].value == 3){
                 hour = 5
+            }else if(note.intervals[i].value == 2){
+                hour = 10
+            }else if(note.intervals[i].value == 3){
+                hour = 15
             }
     
         }
