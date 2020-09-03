@@ -14,7 +14,7 @@ const NoteItem = (props)=>{
             <TouchableHighlight
                 style={{flex:1}}
                 onPress={()=>{
-                    alert(props.title)
+                    
                 }}
             >
                 <View>

@@ -72,11 +72,9 @@ export async function addNote(note){
             alarmIds += note.alarm_id[i] + ",";
         }
 
-        alarmIds = alarmIds.slice(0, -1);
-
         console.log(alarmIds)
 
-        let insert_tb_note = await ExecuteQuery("INSERT INTO tb_note (title, desc, time, attachment, alarm_id) VALUES (?, ?, ?, ?, ?);",[note.title, note.desc, note.time, note.attachment, alarmIds]);
+        let insert_tb_note = await ExecuteQuery("INSERT INTO tb_note (title, desc, time, attachment, alarm_id) VALUES (?, ?, ?, ?, ?);",[note.title, note.desc, note.time, note.attachment, alarmIds.toString()]);
         let insertedId = insert_tb_note.insertId;
 
         var values = "";
@@ -112,8 +110,13 @@ export async function addNote(note){
 export async function updateNote(note){
     var result = false;
     try{
-        let update_tb_note = await ExecuteQuery("UPDATE tb_note SET title = ?, desc = ?, time = ?, attachment = ? WHERE id = ?;",[note.title, note.desc, note.time, note.attachment, note.id]);
+        var alarmIds = '';
+        for(var i=0;i<note.alarm_id.length;i++){
+            alarmIds += note.alarm_id[i] + ",";
+        }
 
+        let update_tb_note = await ExecuteQuery("UPDATE tb_note SET title = ?, desc = ?, time = ?, attachment = ? , alarm_id = ? WHERE id = ?;",[note.title, note.desc, note.time, note.attachment, alarmIds.toString(), note.id]);
+        
         //delete data
         let delete_note_interval =  await ExecuteQuery("DELETE FROM tb_note_interval WHERE id_note=?;", [note.id]);
         
