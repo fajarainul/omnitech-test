@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-picker';
 import validationWrapper from '../validation/validation';
 import App from '../../App';
 import { getIntervals, addNote, getNote, updateNote } from '../database/NoteDB';
+import { setAlarm } from '../alarm/alarm';
 
 class FormNote extends React.Component{
 
@@ -54,7 +55,8 @@ class FormNote extends React.Component{
             image : '',
             imageError : '',
             isUpdate : false,
-            idNote : null
+            idNote : null,
+            alarmIds : []
         }
     }
 
@@ -68,7 +70,6 @@ class FormNote extends React.Component{
             let note = await getNote(id);
         
             if(note!=null){
-                var tempIntervals = []
                 var length = intervals.length;
                 var length2 = note.intervals.length;
                 for(var i = 0; i < length ; i++){
@@ -82,6 +83,22 @@ class FormNote extends React.Component{
                     }
                 }
 
+                var alarms = [];
+                var alarm_id = ''
+                if(note.alarm_id){
+                    if(note.alarm_id.charAt(note.alarm_id.length-1)== ','){
+                        alarm_id = note.alarm_id.slice(0, -1);
+                    }else{
+                        alarm_id = note.alarm_id;
+                    }
+
+                    if(alarm_id!=''){
+                        alarms = alarm_id.split(',').map(function(item) {
+                            return parseInt(item, 10);
+                        });
+                    }
+                }
+
                 this.setState({
                     image : note.attachment,
                     title : note.title,
@@ -90,7 +107,8 @@ class FormNote extends React.Component{
                     selectedDate : note.time === null ? Moment(new Date()).add(1, 'days').toDate() : Moment(note.time).toDate(),
                     intervals : [...intervals],
                     isUpdate : true,
-                    idNote : id
+                    idNote : id,
+                    alarmIds : [...alarms]
                 })
             }
         }else{
@@ -101,7 +119,6 @@ class FormNote extends React.Component{
     }
 
     onChangeDate = (event, date) =>{
-        console.log(Moment(date).format('YYYY-MM-DD HH:mm:ss'))
         if(date!==undefined){
             this.setState({
                 selectedDate : date,
@@ -153,8 +170,15 @@ class FormNote extends React.Component{
                 time : this.state.isUsingReminder ? Moment(this.state.selectedDate).format('YYYY-MM-DD HH:mm:ss') : null,
                 attachment : this.state.image,
                 intervals : this.state.isUsingReminder ? this.state.intervals : [],
-                id : this.state.idNote
+                id : this.state.idNote,
+                alarm_id : this.state.alarmIds
             }
+            //set alarm
+            let alarmIds = await setAlarm(note)
+            note = {...note, alarm_id : alarmIds}
+            this.setState({
+                alarmIds : [...alarmIds]
+            })
 
             var result = false
 

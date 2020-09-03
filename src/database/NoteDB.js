@@ -13,7 +13,7 @@ export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) 
 
 export async function createTable() {
     
-    let tb_note = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note (id	INTEGER NOT NULL UNIQUE, title	TEXT, desc	TEXT, time	TEXT, attachment	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
+    let tb_note = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note (id	INTEGER NOT NULL UNIQUE, alarm_id INTEGER,title	TEXT, desc	TEXT, time	TEXT, attachment	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
     let tb_user = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_user (id	INTEGER NOT NULL UNIQUE, firstname	TEXT, lastname	TEXT, email	TEXT, imageprofile	TEXT, password	TEXT, sex	INTEGER, birthdate	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
 
     //create tb note interval
@@ -67,7 +67,14 @@ export async function getIntervals(){
 export async function addNote(note){
     var result = false;
     try{
-        let insert_tb_note = await ExecuteQuery("INSERT INTO tb_note (title, desc, time, attachment) VALUES (?, ?, ?, ?);",[note.title, note.desc, note.time, note.attachment]);
+        var alarmIds = '';
+        for(var i=0;i<note.alarm_id.length;i++){
+            alarmIds += note.alarm_id[i] + ",";
+        }
+
+        console.log(alarmIds)
+
+        let insert_tb_note = await ExecuteQuery("INSERT INTO tb_note (title, desc, time, attachment, alarm_id) VALUES (?, ?, ?, ?, ?);",[note.title, note.desc, note.time, note.attachment, alarmIds.toString()]);
         let insertedId = insert_tb_note.insertId;
 
         var values = "";
@@ -103,8 +110,13 @@ export async function addNote(note){
 export async function updateNote(note){
     var result = false;
     try{
-        let update_tb_note = await ExecuteQuery("UPDATE tb_note SET title = ?, desc = ?, time = ?, attachment = ? WHERE id = ?;",[note.title, note.desc, note.time, note.attachment, note.id]);
+        var alarmIds = '';
+        for(var i=0;i<note.alarm_id.length;i++){
+            alarmIds += note.alarm_id[i] + ",";
+        }
 
+        let update_tb_note = await ExecuteQuery("UPDATE tb_note SET title = ?, desc = ?, time = ?, attachment = ? , alarm_id = ? WHERE id = ?;",[note.title, note.desc, note.time, note.attachment, alarmIds.toString(), note.id]);
+        
         //delete data
         let delete_note_interval =  await ExecuteQuery("DELETE FROM tb_note_interval WHERE id_note=?;", [note.id]);
         
