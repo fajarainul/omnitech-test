@@ -19,30 +19,28 @@ export async function setAlarm(note){
             }else if(note.intervals[i].value == 2){
                 hour = 3
             }else if(note.intervals[i].value == 3){
-                hour = 24
+                hour = 5
             }
     
         }
 
         if(hour != 0){
-            var date = Moment(note.time).subtract(hour, 'hours').format("DD-MM-YYYY HH:mm:ss");
+            var date = Moment(note.time).subtract(hour, 'minutes').format("DD-MM-YYYY HH:mm:ss");
+            console.log(date)
             const alarmNotifData = {
                 title: note.title,
                 message: note.desc,
                 channel: "omnitech_test",
                 small_icon: "ic_launcher",
-                has_button : true,
-                loop_sound : false,
-                schedule_type : 'once',
                 auto_cancel : true,
                 fire_date : date
             };
+
+            console.log(alarmNotifData)
         
             //Schedule Future Alarm
             const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData });
-        
-            //Send Local Notification Now
-            ReactNativeAN.sendNotification(alarmNotifData);
+    
         }
 
     }
