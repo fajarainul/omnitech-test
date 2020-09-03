@@ -25,3 +25,16 @@ export async function getUserData(user){
     return result;
 
 }
+
+export async function clearUserSession(){
+
+    try {
+        await AsyncStorage.removeItem('@user_data');
+    } catch (e) {
+        console.log(e)
+    // saving error
+    }
+
+    return true;
+
+}
