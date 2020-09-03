@@ -13,29 +13,31 @@ export const ExecuteQuery = (sql, params = []) => new Promise((resolve, reject) 
 
 export async function createTable() {
     
-    let tb_note = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note (id	INTEGER NOT NULL UNIQUE, alarm_id INTEGER,title	TEXT, desc	TEXT, time	TEXT, attachment	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
-    let tb_user = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_user (id	INTEGER NOT NULL UNIQUE, firstname	TEXT, lastname	TEXT, email	TEXT, imageprofile	TEXT, password	TEXT, sex	INTEGER, birthdate	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
+    try{
+        let tb_note = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note (id	INTEGER NOT NULL UNIQUE, alarm_id INTEGER,title	TEXT, desc	TEXT, time	TEXT, attachment	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
+        let tb_user = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_user (id	INTEGER NOT NULL UNIQUE, firstname	TEXT, lastname	TEXT, email	TEXT, imageprofile	TEXT, password	TEXT, sex	INTEGER, birthdate	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
 
-    //create tb note interval
-    let tb_note_interval = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note_interval (id	INTEGER NOT NULL UNIQUE, id_note INTEGER, id_interval INTEGER, PRIMARY KEY(id AUTOINCREMENT))", []);
-    
-    let check_interval = await ExecuteQuery("SELECT * from tb_interval;",[]);
-    if(check_interval.rows.length != 3){
-      //drop tb intervasl
-      await ExecuteQuery("DROP TABLE IF EXISTS tb_interval", []);
-      //create tb interval
-      let tb_interval = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_interval (id	INTEGER NOT NULL UNIQUE, interval	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
-      //init tb interval
-      let init_tb_interval = await ExecuteQuery("INSERT INTO tb_interval (id, interval) VALUES (1, \"1 Hour\"), (2, \"3 Hours\"), (3, \"1 Day\");", []);
+        //create tb note interval
+        let tb_note_interval = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_note_interval (id	INTEGER NOT NULL UNIQUE, id_note INTEGER, id_interval INTEGER, PRIMARY KEY(id AUTOINCREMENT))", []);
+        
+        //create tb interval
+        let tb_interval = await ExecuteQuery("CREATE TABLE IF NOT EXISTS tb_interval (id	INTEGER NOT NULL UNIQUE, interval	TEXT, PRIMARY KEY(id AUTOINCREMENT))", []);
+
+        if(tb_interval){
+        //init tb interval
+        let init_tb_interval = await ExecuteQuery("INSERT INTO tb_interval (id, interval) VALUES (1, \"1 Hour\"), (2, \"3 Hours\"), (3, \"1 Day\");", []);
+        }
+
+        //initiate tb user
+        //check tb user
+        let check_tb_user = await ExecuteQuery("SELECT * FROM tb_user;", []);
+        if(check_tb_user.rows.length == 0 ){
+            let insert_user = await ExecuteQuery("INSERT INTO tb_user (firstname, lastname, email, imageprofile, password, sex, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?)", ['fajar', 'ainul', 'fajar@email.com', null, 'password', 1, '1998-08-08'])
+        }
+
+    }catch(err){
+        console.log(err)
     }
-
-    //initiate tb user
-    //check tb user
-    let check_tb_user = await ExecuteQuery("SELECT * FROM tb_user;", []);
-    if(check_tb_user.rows.length == 0 ){
-        let insert_user = await ExecuteQuery("INSERT INTO tb_user (firstname, lastname, email, imageprofile, password, sex, birthdate) VALUES (?, ?, ?, ?, ?, ?, ?)", ['fajar', 'ainul', 'fajar@email.com', null, 'password', 1, '1998-08-08'])
-    }
-
 }
 
 export async function getIntervals(){
@@ -72,7 +74,6 @@ export async function addNote(note){
             alarmIds += note.alarm_id[i] + ",";
         }
 
-        console.log(alarmIds)
 
         let insert_tb_note = await ExecuteQuery("INSERT INTO tb_note (title, desc, time, attachment, alarm_id) VALUES (?, ?, ?, ?, ?);",[note.title, note.desc, note.time, note.attachment, alarmIds.toString()]);
         let insertedId = insert_tb_note.insertId;
