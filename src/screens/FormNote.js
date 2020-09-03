@@ -17,6 +17,7 @@ import ImagePicker from 'react-native-image-picker';
 import validationWrapper from '../validation/validation';
 import App from '../../App';
 import { getIntervals, addNote, getNote, updateNote } from '../database/NoteDB';
+import { setAlarm } from '../alarm/alarm';
 
 class FormNote extends React.Component{
 
@@ -155,6 +156,12 @@ class FormNote extends React.Component{
                 intervals : this.state.isUsingReminder ? this.state.intervals : [],
                 id : this.state.idNote
             }
+            //set alarm
+            let alarmIds = await setAlarm(note)
+            note = {...note, alarm_id : alarmIds}
+            console.log('noteResult')
+            console.log(note)
+            console.log('noteResult')
 
             var result = false
 

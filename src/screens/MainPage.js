@@ -12,6 +12,7 @@ import EmptyNote from '../components/empty/empty_note'
 import FloatingActionButton from '../components/button/floating_action_button'
 import {getNotes, deleteNote} from '../database/NoteDB'
   
+
 class MainPage extends React.Component{
     
     constructor(props) {
@@ -26,7 +27,6 @@ class MainPage extends React.Component{
     async componentDidMount(){
         this.getNotes();
     }
-
 
     async getNotes(){
         let result = await getNotes();
