@@ -30,16 +30,19 @@ export async function setAlarm(note){
             const alarmNotifData = {
                 title: note.title,
                 message: note.desc,
-                channel: "omnitech_test",
+                channel: "my_channel_id",
                 small_icon: "ic_launcher",
-                auto_cancel : true,
-                fire_date : date
             };
 
             console.log(alarmNotifData)
         
-            //Schedule Future Alarm
-            const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData });
+            try{
+                //Schedule Future Alarm
+                const alarm = await ReactNativeAN.scheduleAlarm({ ...alarmNotifData, fire_date: date });
+                console.log(alarm)
+            }catch(err){
+                console.log(err)
+            }
     
         }
 
