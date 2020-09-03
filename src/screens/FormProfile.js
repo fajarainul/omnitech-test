@@ -83,20 +83,7 @@ class FormProfile extends React.Component{
                 selectedDate : Moment(user.birthdate).toDate(),
                 email : user.email,
                 image : user.imageprofile,
-                data : [
-                    {
-                        label: 'Male',
-                        value: 1,
-                        color :"#81b0ff",
-                        selected : false
-                    },
-                    {
-                        label: 'Female',
-                        value: 2,
-                        color :"#81b0ff",
-                        selected : false
-                    },
-                ]
+                data : [...temp]
             }, ()=>{console.log(this.state.data)})
         }
 

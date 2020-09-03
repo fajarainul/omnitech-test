@@ -33,7 +33,7 @@ class FormNote extends React.Component{
             showDate : false,
             selectedDate : Moment(new Date()).add(1, 'days').toDate(),
             mode : 'date',
-            minDate : Moment(new Date()).add(1, 'days').toDate(),
+            minDate : Moment(new Date()).add(0, 'days').toDate(),
 
             intervals : [
                 {
